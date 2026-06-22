@@ -1,4 +1,4 @@
-# Soporte IT — Frontend
+# Soporte IT — Frontend.
 
 Frontend web estático para gestión de tareas de soporte IT de Petromark SRL.
 Sigue la arquitectura de Prodemark: HTML/CSS/JS vanilla, sesión por PIN hasheado en localStorage, modular por vistas.
