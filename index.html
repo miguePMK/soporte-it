@@ -9,20 +9,17 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-<!-- CSS modular -->
 <link rel="stylesheet" href="css/tokens.css"/>
 <link rel="stylesheet" href="css/base.css"/>
 <link rel="stylesheet" href="css/layout.css"/>
 <link rel="stylesheet" href="css/components.css"/>
 <link rel="stylesheet" href="css/views.css"/>
 
-<!-- Firebase compat (cargado pero todavía no inicializado en este scaffold dummy) -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </head>
 <body>
 
-<!-- Logo SVG inline (symbol reutilizable) — monitor/red -->
 <svg style="display:none" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <symbol id="sit-logo" viewBox="0 0 24 24">
@@ -35,13 +32,11 @@
   </defs>
 </svg>
 
-<!-- ═══ LOADING ═══ -->
 <div id="loading">
   <div class="spinner"></div>
   <p>Cargando Soporte IT...</p>
 </div>
 
-<!-- ═══ BOOTSTRAP ═══ -->
 <div id="bootstrapScreen" style="display:none">
   <div class="auth-screen">
     <div class="auth-box">
@@ -62,7 +57,6 @@
   </div>
 </div>
 
-<!-- ═══ LOGIN ═══ -->
 <div id="loginScreen" style="display:none">
   <div class="auth-screen">
     <div class="auth-box">
@@ -83,11 +77,8 @@
   </div>
 </div>
 
-<!-- ═══ APP ═══ -->
 <div id="appScreen" style="display:none">
   <div class="app-shell">
-
-    <!-- SIDEBAR -->
     <aside class="sidebar">
       <div class="sidebar-header">
         <div class="sidebar-brand">
@@ -103,21 +94,13 @@
       <nav class="sidebar-nav" id="sidebarNav"></nav>
       <div class="sidebar-footer" id="sidebarFooter"></div>
     </aside>
-
-    <!-- CONTENIDO PRINCIPAL -->
     <main class="content">
       <div id="mainView"></div>
     </main>
-
   </div>
 </div>
 
-<!-- NAV MOBILE (bottom) -->
 <nav class="mobile-nav" id="mobileNav"></nav>
-
-<!-- ═══════════════════════════════════════
-     MODALES
-═══════════════════════════════════════ -->
 
 <!-- USUARIO (admin ABM) -->
 <div class="overlay" id="modalUser">
@@ -175,6 +158,19 @@
         <div class="form-group"><label>Marca</label><input id="pmMarca" placeholder="HP, Xerox, Brother..."/></div>
         <div class="form-group"><label>Modelo</label><input id="pmModelo" placeholder="LaserJet Pro M404dn"/></div>
       </div>
+      <div class="form-group"><label>Número de serie</label><input id="pmNumeroSerie" placeholder="Serial físico, ej: VNB3K12345"/></div>
+
+      <!-- Toggle Color / B&N — define qué campos de tóner se muestran -->
+      <div class="toggle-row">
+        <div class="label">
+          <div class="title">Impresora a color</div>
+          <div class="desc">Si está activado se piden los modelos de tóner CMY además del negro.</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="pmEsColor" onchange="togglePrinterColorFields()"/>
+          <span class="slider"></span>
+        </label>
+      </div>
 
       <h4>Red</h4>
       <div class="form-row">
@@ -198,12 +194,24 @@
         <div class="form-group"><label>Community</label><input id="pmSnmpCommunity" placeholder="public"/></div>
       </div>
 
+      <h4>Repuestos / Consumibles</h4>
+      <div class="form-group"><label>Modelo de tóner negro (K)</label><input id="pmTonerBlack" placeholder="Ej: CF280A o HP 80A"/></div>
+      <div id="pmColorTonerFields" style="display:none">
+        <div class="form-row">
+          <div class="form-group"><label>Modelo tóner cian (C)</label><input id="pmTonerCyan" placeholder="Ej: CF411A"/></div>
+          <div class="form-group"><label>Modelo tóner magenta (M)</label><input id="pmTonerMagenta" placeholder="Ej: CF413A"/></div>
+        </div>
+        <div class="form-group"><label>Modelo tóner amarillo (Y)</label><input id="pmTonerYellow" placeholder="Ej: CF412A"/></div>
+      </div>
+      <div class="form-group"><label>Modelo de tambor (drum)</label><input id="pmDrumModel" placeholder="Opcional. Ej: CF232A"/></div>
+      <div class="form-group"><label>Proveedor de servicio</label><input id="pmProveedorServicio" placeholder="Empresa de soporte técnico"/></div>
+
       <h4>Inventario</h4>
       <div class="form-row">
         <div class="form-group"><label>Fecha de adquisición</label><input id="pmFechaAdq" type="date"/></div>
         <div class="form-group"><label>Garantía hasta</label><input id="pmGarantia" type="date"/></div>
       </div>
-      <div class="form-group"><label>Notas</label><textarea id="pmNotas" rows="2" placeholder="Observaciones, número de serie, etc."></textarea></div>
+      <div class="form-group"><label>Notas</label><textarea id="pmNotas" rows="2" placeholder="Observaciones generales"></textarea></div>
 
       <h4>Estado</h4>
       <div class="toggle-row">
@@ -222,7 +230,6 @@
   </div>
 </div>
 
-<!-- Datalist de departamentos -->
 <datalist id="deptList"></datalist>
 
 <!-- SCANNER DE RED (admin) -->
@@ -230,8 +237,6 @@
   <div class="modal wide">
     <div class="modal-header"><h3>📡 Escanear red</h3><button class="modal-close" onclick="closeScanModal()">✕</button></div>
     <div class="modal-body">
-
-      <!-- Paso 1: input -->
       <div id="scanStepInput">
         <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.5">
           El agente va a escanear el rango indicado, identificar dispositivos por SNMP / puertos abiertos
@@ -245,8 +250,6 @@
           Ejemplos válidos: <code style="font-family:'DM Mono',monospace">192.168.0.0/24</code>, <code style="font-family:'DM Mono',monospace">10.0.5.0/24</code>
         </p>
       </div>
-
-      <!-- Paso 2: escaneando -->
       <div id="scanStepRunning" style="display:none;text-align:center;padding:24px 12px">
         <div class="spinner" style="margin:0 auto 16px"></div>
         <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:6px">Escaneando…</div>
@@ -261,20 +264,15 @@
           Podés dejar abierto el modal o cerrarlo y volver más tarde (el escaneo sigue en el agente).
         </p>
       </div>
-
-      <!-- Paso 3: resultados -->
       <div id="scanStepResults" style="display:none">
         <p style="font-size:12px;color:var(--muted);margin-bottom:12px" id="scanResultsSummary"></p>
         <div id="scanResultsTable"></div>
       </div>
-
-      <!-- Paso 4: error -->
       <div id="scanStepError" style="display:none;padding:24px 12px;text-align:center">
         <div style="font-size:32px;margin-bottom:8px">⚠️</div>
         <div style="font-size:14px;font-weight:600;color:var(--danger);margin-bottom:6px">El escaneo falló</div>
         <div style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;background:var(--danger-dim);border:1px solid var(--danger-border);border-radius:var(--radius-xs);padding:8px 12px;margin-top:12px;display:inline-block;max-width:100%;word-break:break-word" id="scanErrorMsg"></div>
       </div>
-
     </div>
     <div class="modal-footer" id="scanFooter">
       <button class="btn btn-gray btn-sm" onclick="closeScanModal()">Cancelar</button>
@@ -283,12 +281,21 @@
   </div>
 </div>
 
-<!-- TOAST -->
+<!-- COMPRAS / PEDIDO DE INSUMOS -->
+<div class="overlay" id="modalPurchase">
+  <div class="modal">
+    <div class="modal-header"><h3>🛒 Datos para compras</h3><button class="modal-close" onclick="closeModal('modalPurchase')">✕</button></div>
+    <div class="modal-body" id="purchaseModalBody"></div>
+    <div class="modal-footer">
+      <button class="btn btn-gray btn-sm" onclick="closeModal('modalPurchase')">Cerrar</button>
+      <button class="btn btn-secondary btn-sm" onclick="copyPurchaseText()">📋 Copiar</button>
+      <button class="btn btn-primary btn-sm" onclick="sendPurchaseEmail()">✉️ Abrir en mail</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
-<!-- ═══════════════════════════════════════
-     JAVASCRIPT
-═══════════════════════════════════════ -->
 <script type="module" src="js/app.js"></script>
 </body>
 </html>

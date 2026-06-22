@@ -7,7 +7,10 @@ import { createFirstAdmin, populateLoginDropdown, doLogin, doLogout, postLoginSe
 import { DUMMY_PRINTERS, DUMMY_STATUS } from './dummy-data.js';
 
 import { renderDashboard } from './views/dashboard.js';
-import { renderImpresoras, openPrinterDetail } from './views/impresoras.js';
+import {
+  renderImpresoras, openPrinterDetail,
+  openPurchaseModal, copyPurchaseText, sendPurchaseEmail
+} from './views/impresoras.js';
 import { renderPerfil, openChangePinModal, changePin } from './views/perfil.js';
 import {
   renderAdminUsers,
@@ -18,7 +21,8 @@ import {
   renderAdminPrinters,
   openCreatePrinterModal, openEditPrinterModal,
   savePrinter, deletePrinter,
-  openScanModal, closeScanModal, startScan, addFromScan
+  openScanModal, closeScanModal, startScan, addFromScan,
+  togglePrinterColorFields
 } from './views/admin/printers.js';
 
 export function navigate(view) {
@@ -97,8 +101,10 @@ Object.assign(window, {
   renderView,
   openChangePinModal, changePin,
   openPrinterDetail,
+  openPurchaseModal, copyPurchaseText, sendPurchaseEmail,
   openCreateUserModal, openEditUserModal, saveUser, resetUserPin, deleteUser,
   openCreatePrinterModal, openEditPrinterModal, savePrinter, deletePrinter,
+  togglePrinterColorFields,
   openScanModal, closeScanModal, startScan, addFromScan
 });
 

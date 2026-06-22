@@ -83,7 +83,11 @@ function renderPrinterCard(p) {
   const st = p.status || {};
   const dotClass = p.estado === "offline" ? "off" : p.estado === "unknown" ? "dim" : "";
 
-  const hasColor = st.toner_cyan_pct != null || st.toner_magenta_pct != null || st.toner_yellow_pct != null;
+  // Si la impresora es color (campo en /printers) mostramos las 4 barras aunque
+  // el agente todavía no haya reportado los % de CMY. Fallback al heurístico anterior.
+  const hasColor = p.es_color === true
+    || st.toner_cyan_pct != null || st.toner_magenta_pct != null || st.toner_yellow_pct != null;
+
   const toners = hasColor
     ? [["K", st.toner_black_pct], ["C", st.toner_cyan_pct], ["M", st.toner_magenta_pct], ["Y", st.toner_yellow_pct]]
     : [["K", st.toner_black_pct]];
@@ -99,7 +103,6 @@ function renderPrinterCard(p) {
       </div>`;
   }).join("");
 
-  // Badge de alertas (RFC 3805 / prtAlertTable)
   const alertCount = st.alert_count || 0;
   const critCount  = st.alert_critical_count || 0;
   let alertBadge = "";
@@ -111,12 +114,10 @@ function renderPrinterCard(p) {
     alertBadge = `<span class="${cls}" title="${escapeAttr(st.alert_summary || '')}">${label}</span>`;
   }
 
-  // Chips por categoría — desde alerts_by_category si vino, sino reconstruido del parser
   let categoryChips = "";
   if (alertCount > 0) {
     let byCat = st.alerts_by_category;
     if (!byCat || typeof byCat !== "object") {
-      // Fallback: si el agente no mandó el objeto, lo armamos parseando el summary
       byCat = {};
       parseAlertSummary(st.alert_summary).forEach(a => {
         byCat[a.category] = (byCat[a.category] || 0) + 1;
@@ -169,23 +170,53 @@ export function openPrinterDetail(id) {
   if (!p) return;
 
   const dotClass = !st.online ? "off" : "";
-  const hasColor = st.toner_cyan_pct != null || st.toner_magenta_pct != null || st.toner_yellow_pct != null;
+  const hasColor = p.es_color === true
+    || st.toner_cyan_pct != null || st.toner_magenta_pct != null || st.toner_yellow_pct != null;
+
   const toners = hasColor
     ? [["K", st.toner_black_pct], ["C", st.toner_cyan_pct], ["M", st.toner_magenta_pct], ["Y", st.toner_yellow_pct]]
     : [["K", st.toner_black_pct]];
 
-  // Parsea "[CRIT] x; [WARN] y; [CRIT] z" en items individuales con severidad
   const alerts = parseAlertSummary(st.alert_summary);
   const alertCount = st.alert_count || 0;
   const critCount  = st.alert_critical_count || 0;
 
-  // IP clicable que abre el panel web de la impresora
   const ipCell = p.ip
     ? `<a href="http://${escapeAttr(p.ip)}" target="_blank" rel="noopener noreferrer"
          class="ip-link" title="Abrir panel web de la impresora">
          ${escapeHtml(p.ip)} <span style="font-size:10px;opacity:.7">↗</span>
        </a>`
     : "—";
+
+  // Sección "Datos técnicos / Repuestos"
+  const tieneAlgunRepuesto =
+    p.toner_model_black || p.toner_model_cyan || p.toner_model_magenta ||
+    p.toner_model_yellow || p.drum_model || p.numero_serie || p.proveedor_servicio;
+
+  const repuestosHtml = `
+    <h4>
+      Datos técnicos / Repuestos
+      <button class="btn btn-secondary btn-sm" style="float:right;margin-top:-4px" onclick="openPurchaseModal('${p.id}')">🛒 Datos para compras</button>
+    </h4>
+    <div class="detail-grid">
+      <div class="detail-item"><div class="dl">Tipo</div><div class="dv">${p.es_color ? "🎨 Color" : "⚫ Blanco y negro"}</div></div>
+      <div class="detail-item"><div class="dl">Número de serie</div><div class="dv mono">${escapeHtml(p.numero_serie || "—")}</div></div>
+
+      <div class="detail-item"><div class="dl">Tóner negro (K)</div><div class="dv mono">${escapeHtml(p.toner_model_black || "—")}</div></div>
+      ${p.es_color ? `
+        <div class="detail-item"><div class="dl">Tóner cian (C)</div><div class="dv mono">${escapeHtml(p.toner_model_cyan || "—")}</div></div>
+        <div class="detail-item"><div class="dl">Tóner magenta (M)</div><div class="dv mono">${escapeHtml(p.toner_model_magenta || "—")}</div></div>
+        <div class="detail-item"><div class="dl">Tóner amarillo (Y)</div><div class="dv mono">${escapeHtml(p.toner_model_yellow || "—")}</div></div>
+      ` : ""}
+
+      <div class="detail-item"><div class="dl">Tambor / Drum</div><div class="dv mono">${escapeHtml(p.drum_model || "—")}</div></div>
+      <div class="detail-item"><div class="dl">Proveedor de servicio</div><div class="dv">${escapeHtml(p.proveedor_servicio || "—")}</div></div>
+    </div>
+    ${!tieneAlgunRepuesto ? `
+      <div style="font-size:11px;color:var(--muted);margin-top:6px;font-style:italic">
+        Esta impresora todavía no tiene cargados sus datos de repuesto. Editala desde Admin → Impresoras para completarlos.
+      </div>` : ""}
+  `;
 
   document.getElementById("prModalTitle").innerHTML =
     `<span class="live-dot ${dotClass}" style="margin-right:8px"></span>${escapeHtml(p.nombre)}`;
@@ -204,6 +235,8 @@ export function openPrinterDetail(id) {
       ${p.garantia_hasta ? `<div class="detail-item"><div class="dl">Garantía hasta</div><div class="dv">${fmtDate(p.garantia_hasta)}</div></div>` : ""}
       ${p.notas ? `<div class="detail-item" style="grid-column:1/-1"><div class="dl">Notas</div><div class="dv">${escapeHtml(p.notas)}</div></div>` : ""}
     </div>
+
+    ${repuestosHtml}
 
     <h4>Estado actual</h4>
     <div class="detail-grid">
@@ -258,10 +291,107 @@ export function openPrinterDetail(id) {
   openModal("modalPrinter");
 }
 
-// Parsea el alert_summary del agente. Formato esperado:
-//   "[CRIT/jam] Paper jam tray 2; [WARN/toner] Black toner low"
-// También acepta el formato viejo "[CRIT] texto" (sin categoría) por retrocompatibilidad.
-// Retorna array de { severity: 'crit'|'warn', category: string, text: string }
+// ════════════════════════════════════════════
+// COMPRAS / PEDIDO DE INSUMOS
+// ════════════════════════════════════════════
+
+// Genera el texto plano que se muestra/copia/manda por mail.
+function buildPurchaseText(p, st) {
+  const lineas = [];
+  lineas.push(`Pedido de insumos para impresora`);
+  lineas.push(`─────────────────────────────────────`);
+  lineas.push(`Equipo:        ${p.nombre}`);
+  if (p.marca || p.modelo) lineas.push(`Marca/modelo:  ${[p.marca, p.modelo].filter(Boolean).join(" ")}`);
+  if (p.numero_serie)      lineas.push(`N° de serie:   ${p.numero_serie}`);
+  if (p.ubicacion)         lineas.push(`Ubicación:     ${p.ubicacion}`);
+  if (p.departamento)      lineas.push(`Departamento:  ${p.departamento}`);
+  if (p.ip)                lineas.push(`IP:            ${p.ip}`);
+  lineas.push(`Tipo:          ${p.es_color ? "Color (CMYK)" : "Blanco y negro"}`);
+  lineas.push("");
+  lineas.push(`Repuestos / consumibles a pedir:`);
+
+  const items = [];
+  items.push({ label: "Tóner negro (K)", value: p.toner_model_black, pct: st.toner_black_pct });
+  if (p.es_color) {
+    items.push({ label: "Tóner cian (C)",    value: p.toner_model_cyan,    pct: st.toner_cyan_pct });
+    items.push({ label: "Tóner magenta (M)", value: p.toner_model_magenta, pct: st.toner_magenta_pct });
+    items.push({ label: "Tóner amarillo (Y)",value: p.toner_model_yellow,  pct: st.toner_yellow_pct });
+  }
+  if (p.drum_model) items.push({ label: "Tambor / Drum", value: p.drum_model, pct: null });
+
+  items.forEach(it => {
+    const nivel = it.pct != null ? ` (nivel actual: ${it.pct}%)` : "";
+    lineas.push(`  • ${it.label.padEnd(20)} ${it.value || "— sin cargar —"}${nivel}`);
+  });
+
+  if (p.proveedor_servicio) {
+    lineas.push("");
+    lineas.push(`Proveedor de servicio: ${p.proveedor_servicio}`);
+  }
+
+  lineas.push("");
+  lineas.push(`— Generado desde Soporte IT · Petromark SRL`);
+  return lineas.join("\n");
+}
+
+// Estado vivo para los handlers del modal de compras
+let _purchaseCurrent = { id: null, text: "", printer: null };
+
+export function openPurchaseModal(id) {
+  const p = state.printers[id];
+  const st = state.status[id] || {};
+  if (!p) return;
+
+  const text = buildPurchaseText(p, st);
+  _purchaseCurrent = { id, text, printer: p };
+
+  document.getElementById("purchaseModalBody").innerHTML = `
+    <p style="font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.5">
+      Resumen listo para mandar a compras. Podés copiarlo o abrirlo directamente como mail.
+    </p>
+    <pre class="purchase-text" id="purchaseText">${escapeHtml(text)}</pre>
+  `;
+
+  openModal("modalPurchase");
+}
+
+export async function copyPurchaseText() {
+  if (!_purchaseCurrent.text) return;
+  try {
+    await navigator.clipboard.writeText(_purchaseCurrent.text);
+    showToastCopied();
+  } catch {
+    // Fallback para navegadores viejos
+    const ta = document.createElement("textarea");
+    ta.value = _purchaseCurrent.text;
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand("copy"); showToastCopied(); }
+    catch { /* nada */ }
+    document.body.removeChild(ta);
+  }
+}
+
+function showToastCopied() {
+  // Importado vía helpers? Acá usamos directo el dom para no romper imports.
+  const t = document.getElementById("toast");
+  t.innerHTML = "📋 Copiado al portapapeles";
+  t.className = "toast show";
+  setTimeout(() => t.classList.remove("show"), 1800);
+}
+
+export function sendPurchaseEmail() {
+  const p = _purchaseCurrent.printer;
+  if (!p) return;
+  const subject = `Pedido de insumos · ${p.nombre}${p.ubicacion ? " (" + p.ubicacion + ")" : ""}`;
+  const body = _purchaseCurrent.text;
+  const href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.location.href = href;
+}
+
+// ════════════════════════════════════════════
+// Parser de alertas y categorías
+// ════════════════════════════════════════════
 function parseAlertSummary(summary) {
   if (!summary || typeof summary !== "string") return [];
   return summary
@@ -269,14 +399,12 @@ function parseAlertSummary(summary) {
     .map(s => s.trim())
     .filter(Boolean)
     .map(s => {
-      // Formato nuevo con categoría: [SEV/category] texto
       const mNew = s.match(/^\[(CRIT|WARN)\/([a-z]+)\]\s*(.*)$/i);
       if (mNew) return {
         severity: mNew[1].toLowerCase() === "crit" ? "crit" : "warn",
         category: mNew[2].toLowerCase(),
         text: mNew[3].trim()
       };
-      // Formato viejo sin categoría: [SEV] texto
       const mOld = s.match(/^\[(CRIT|WARN)\]\s*(.*)$/i);
       if (mOld) return {
         severity: mOld[1].toLowerCase() === "crit" ? "crit" : "warn",
@@ -287,7 +415,6 @@ function parseAlertSummary(summary) {
     });
 }
 
-// Íconos + labels para las 9 categorías
 const CATEGORY_META = {
   paper:      { icon: "📄", label: "Papel" },
   jam:        { icon: "🔧", label: "Atasco" },

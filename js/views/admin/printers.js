@@ -34,7 +34,7 @@ export function renderAdminPrinters() {
           </div>`
         : `<div class="table-wrap"><table class="admin-table">
             <thead><tr>
-              <th>Nombre</th><th>IP</th><th>Marca / Modelo</th><th>Departamento</th><th>Estado</th><th>Modificado</th><th>Acciones</th>
+              <th>Nombre</th><th>IP</th><th>Marca / Modelo</th><th>Color</th><th>Departamento</th><th>Estado</th><th>Modificado</th><th>Acciones</th>
             </tr></thead>
             <tbody>${printers.map(([id, p]) => {
               const activo = p.activo !== false;
@@ -46,6 +46,7 @@ export function renderAdminPrinters() {
                 </td>
                 <td style="font-family:'DM Mono',monospace">${escapeHtml(p.ip || "—")}</td>
                 <td>${escapeHtml(p.marca || "—")}<br/><span style="font-size:11px;color:var(--muted)">${escapeHtml(p.modelo || "")}</span></td>
+                <td>${p.es_color ? `<span class="status-badge online" style="background:var(--accent-2-dim);color:var(--accent-2);border-color:var(--accent-2-border)">🎨 Color</span>` : `<span class="status-badge unknown">⚫ B&amp;N</span>`}</td>
                 <td>${escapeHtml(p.departamento || "—")}</td>
                 <td>
                   <span class="role-tag" style="${activo ? 'background:var(--success-dim);color:var(--success);border-color:var(--success-border)' : ''}">${activo ? "ACTIVA" : "INACTIVA"}</span>
@@ -70,6 +71,12 @@ function getUserName(uid) {
   return (state.allUsers[uid] && state.allUsers[uid].nombre) || uid;
 }
 
+// Toggle de visibilidad de los campos CMY según el checkbox "es_color"
+export function togglePrinterColorFields() {
+  const isColor = document.getElementById("pmEsColor").checked;
+  document.getElementById("pmColorTonerFields").style.display = isColor ? "" : "none";
+}
+
 export function openCreatePrinterModal(prefill = {}) {
   document.getElementById("printerModalTitle").textContent = "Nueva impresora";
   document.getElementById("pmId").value = "";
@@ -77,6 +84,7 @@ export function openCreatePrinterModal(prefill = {}) {
   document.getElementById("pmNombre").value = prefill.nombre || "";
   document.getElementById("pmMarca").value = prefill.marca || "";
   document.getElementById("pmModelo").value = prefill.modelo || "";
+  document.getElementById("pmNumeroSerie").value = "";
   document.getElementById("pmIp").value = prefill.ip || "";
   document.getElementById("pmMac").value = prefill.mac || "";
   document.getElementById("pmDepartamento").value = "";
@@ -87,6 +95,15 @@ export function openCreatePrinterModal(prefill = {}) {
   document.getElementById("pmNotas").value = "";
   document.getElementById("pmActivo").checked = true;
   document.getElementById("pmMonitorear").checked = true;
+
+  document.getElementById("pmEsColor").checked = false;
+  document.getElementById("pmTonerBlack").value = "";
+  document.getElementById("pmTonerCyan").value = "";
+  document.getElementById("pmTonerMagenta").value = "";
+  document.getElementById("pmTonerYellow").value = "";
+  document.getElementById("pmDrumModel").value = "";
+  document.getElementById("pmProveedorServicio").value = "";
+  togglePrinterColorFields();
 
   refreshDeptDatalist();
   populateUbicaciones("");
@@ -103,6 +120,7 @@ export function openEditPrinterModal(id) {
   document.getElementById("pmNombre").value         = p.nombre || "";
   document.getElementById("pmMarca").value          = p.marca || "";
   document.getElementById("pmModelo").value         = p.modelo || "";
+  document.getElementById("pmNumeroSerie").value    = p.numero_serie || "";
   document.getElementById("pmIp").value             = p.ip || "";
   document.getElementById("pmMac").value            = p.mac || "";
   document.getElementById("pmDepartamento").value   = p.departamento || "";
@@ -114,14 +132,21 @@ export function openEditPrinterModal(id) {
   document.getElementById("pmActivo").checked       = p.activo !== false;
   document.getElementById("pmMonitorear").checked   = p.monitorear !== false;
 
+  document.getElementById("pmEsColor").checked          = !!p.es_color;
+  document.getElementById("pmTonerBlack").value         = p.toner_model_black || "";
+  document.getElementById("pmTonerCyan").value          = p.toner_model_cyan || "";
+  document.getElementById("pmTonerMagenta").value       = p.toner_model_magenta || "";
+  document.getElementById("pmTonerYellow").value        = p.toner_model_yellow || "";
+  document.getElementById("pmDrumModel").value          = p.drum_model || "";
+  document.getElementById("pmProveedorServicio").value  = p.proveedor_servicio || "";
+  togglePrinterColorFields();
+
   refreshDeptDatalist();
   populateUbicaciones(p.ubicacion || "");
   openModal("modalPrinterEdit");
 }
 
 function populateUbicaciones(selected) {
-  // Si el valor guardado no está en la lista, lo agregamos como opción extra
-  // así no perdemos info de impresoras viejas con ubicaciones libres.
   const lista = [...UBICACIONES];
   if (selected && !lista.includes(selected)) lista.unshift(selected);
 
@@ -145,6 +170,7 @@ export async function savePrinter() {
   const nombre         = document.getElementById("pmNombre").value.trim();
   const marca          = document.getElementById("pmMarca").value.trim();
   const modelo         = document.getElementById("pmModelo").value.trim();
+  const numero_serie   = document.getElementById("pmNumeroSerie").value.trim();
   const ip             = document.getElementById("pmIp").value.trim();
   const mac            = document.getElementById("pmMac").value.trim().toUpperCase();
   const ubicacion      = document.getElementById("pmUbicacion").value.trim();
@@ -156,6 +182,14 @@ export async function savePrinter() {
   const notas          = document.getElementById("pmNotas").value.trim();
   const activo         = document.getElementById("pmActivo").checked;
   const monitorear     = document.getElementById("pmMonitorear").checked;
+
+  const es_color       = document.getElementById("pmEsColor").checked;
+  const toner_black    = document.getElementById("pmTonerBlack").value.trim();
+  const toner_cyan     = document.getElementById("pmTonerCyan").value.trim();
+  const toner_magenta  = document.getElementById("pmTonerMagenta").value.trim();
+  const toner_yellow   = document.getElementById("pmTonerYellow").value.trim();
+  const drum_model     = document.getElementById("pmDrumModel").value.trim();
+  const proveedor      = document.getElementById("pmProveedorServicio").value.trim();
 
   if (nombre.length < 2)               return showToast("⚠️ Nombre inválido");
   if (!isValidIp(ip))                  return showToast("⚠️ IP inválida (ej: 192.168.1.50)");
@@ -172,6 +206,7 @@ export async function savePrinter() {
     nombre, ip,
     marca: marca || null,
     modelo: modelo || null,
+    numero_serie: numero_serie || null,
     mac: mac || null,
     ubicacion: ubicacion || null,
     departamento: departamento || null,
@@ -181,6 +216,13 @@ export async function savePrinter() {
     garantia_hasta: dateInputToStored(garantia),
     notas: notas || null,
     activo, monitorear,
+    es_color,
+    toner_model_black:   toner_black || null,
+    toner_model_cyan:    es_color ? (toner_cyan    || null) : null,
+    toner_model_magenta: es_color ? (toner_magenta || null) : null,
+    toner_model_yellow:  es_color ? (toner_yellow  || null) : null,
+    drum_model: drum_model || null,
+    proveedor_servicio: proveedor || null,
     modificado_en: Date.now(),
     modificado_por: state.currentUser.id
   };
@@ -239,11 +281,9 @@ export async function deletePrinter(id) {
 // ════════════════════════════════════════════
 // SCANNER DE RED
 // ════════════════════════════════════════════
-// Estado vivo del listener (para .off() al cerrar el modal)
 let _scanListenerRef = null;
 let _discoveredListenerRef = null;
 
-// Valida un CIDR IPv4 tipo "192.168.0.0/24"
 function isValidCidr(s) {
   const m = (s || "").match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})\/(\d{1,2})$/);
   if (!m) return false;
@@ -253,11 +293,8 @@ function isValidCidr(s) {
   return true;
 }
 
-// Abre el modal pidiendo rango
 export function openScanModal() {
   if (USE_DUMMY) return showToast("⚠️ Scanner no disponible en modo dummy");
-
-  // Reset al estado inicial del modal
   document.getElementById("scanRange").value = SCAN_DEFAULT_CIDR;
   document.getElementById("scanStepInput").style.display = "";
   document.getElementById("scanStepRunning").style.display = "none";
@@ -268,7 +305,6 @@ export function openScanModal() {
   openModal("modalScan");
 }
 
-// Cierra y limpia listeners
 export function closeScanModal() {
   detachScanListeners();
   closeModal("modalScan");
@@ -279,7 +315,6 @@ function detachScanListeners() {
   if (_discoveredListenerRef) { _discoveredListenerRef.off(); _discoveredListenerRef = null; }
 }
 
-// Lanza el comando de escaneo
 export async function startScan() {
   const range = document.getElementById("scanRange").value.trim();
   if (!isValidCidr(range)) return showToast("⚠️ CIDR inválido (ej: 192.168.0.0/24)");
@@ -299,14 +334,12 @@ export async function startScan() {
     return showToast("❌ No se pudo lanzar el escaneo (revisá reglas /commands)");
   }
 
-  // Pasamos a la pantalla "escaneando"
   document.getElementById("scanStepInput").style.display = "none";
   document.getElementById("scanFooter").style.display = "none";
   document.getElementById("scanStepRunning").style.display = "";
   document.getElementById("scanRunningRange").textContent = range;
   document.getElementById("scanRunningStatus").textContent = "pending";
 
-  // Listener al status
   _scanListenerRef = db.ref("commands/scan/" + commandId);
   _scanListenerRef.on("value", snap => {
     const cmd = snap.val();
@@ -314,7 +347,6 @@ export async function startScan() {
     document.getElementById("scanRunningStatus").textContent = cmd.status || "—";
 
     if (cmd.status === "done") {
-      // Cargar los discovered
       loadDiscovered(commandId);
     } else if (cmd.status === "error") {
       document.getElementById("scanStepRunning").style.display = "none";
@@ -324,7 +356,6 @@ export async function startScan() {
   });
 }
 
-// Carga /discovered/{commandId} y muestra la tabla
 async function loadDiscovered(commandId) {
   _discoveredListenerRef = db.ref("discovered/" + commandId);
 
@@ -358,13 +389,11 @@ function renderDiscoveredTable(devices) {
     return;
   }
 
-  // Ordenar: impresoras primero, después por IP
   devices.sort((a, b) => {
     if (!!b.is_printer - !!a.is_printer !== 0) return !!b.is_printer - !!a.is_printer;
     return (a.ip || "").localeCompare(b.ip || "", undefined, { numeric: true });
   });
 
-  // IDs ya en inventario (para no permitir doble alta por IP)
   const ipsExistentes = new Set(Object.values(state.printers).map(p => p.ip));
 
   document.getElementById("scanResultsTable").innerHTML = `
@@ -401,7 +430,6 @@ function renderDiscoveredTable(devices) {
     </table></div>`;
 }
 
-// Click en "Agregar a impresoras" desde una fila
 export function addFromScan(ip, marca, modelo, sysName) {
   closeScanModal();
   openCreatePrinterModal({
