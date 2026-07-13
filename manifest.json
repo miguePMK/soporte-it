@@ -55,8 +55,8 @@
       "files": [
         { "name": "kit-red.zip", "path": "files/kit-red/kit-red.zip", "size": "3 KB" }
       ]
-    }
-	    {
+    },
+	{
       "id": "archivadorOutlook",
       "name": "Archivador de Outlook Classic",
       "shortDescription": "Archivador de Correo Electrónico",
@@ -64,13 +64,13 @@
       "category": "Windows",
       "version": "1.0.0",
       "updated": "2026-05-20",
-      "icon": "??",
+      "icon": "📩",
       "changelog": [
         { "version": "1.0.0", "date": "2026-05-20", "notes": "Primera Versión." }
       ],
       "files": [
-        { "name": "kit-red.zip", "path": "files/kit-red/kit-red.zip", "size": "3 KB" }
+        { "name": "Archivador-OutlookClassic.zip", "path": "files/archivadorOutlook/Archivador-OutlookClassic.zip", "size": "8 KB" }
       ]
-    },
+    }
   ]
 }
