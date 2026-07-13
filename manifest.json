@@ -69,7 +69,7 @@
         { "version": "1.0.0", "date": "2026-07-13", "notes": "Primera versión." }
       ],
       "links": [
-        { "label": "Abrir conversor", "url": "tools/conversor-almacenamiento/index.html" }
+        { "label": "Abrir conversor", "url": "tools/conversor-almacenamiento/conversor-almacenamiento_index.html" }
       ]
     }
   ]
