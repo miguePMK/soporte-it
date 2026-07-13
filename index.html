@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Petromark · Catálogo de herramientas IT</title>
+  <meta name="description" content="Catálogo interno de herramientas de soporte IT de Petromark." />
+
+  <!-- Favicon (usa el logo) -->
+  <link rel="icon" type="image/png" href="assets/logo.png" />
+  <link rel="apple-touch-icon" href="assets/logo.png" />
+
+  <!-- Tipografías -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="./" aria-label="Petromark — inicio">
+        <img class="brand-logo" src="assets/logo.png" alt="" width="36" height="36" />
+        <span class="brand-text">
+          <span class="brand-name" data-site-name>Petromark</span>
+          <span class="brand-sub" data-site-subtitle>Catálogo de herramientas IT</span>
+        </span>
+      </a>
+
+      <button id="theme-toggle" class="theme-toggle" type="button" aria-pressed="false" aria-label="Cambiar tema claro/oscuro">
+        <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4V2m0 20v-2m8-8h2M2 12h2m13.66 5.66 1.41 1.41M4.93 4.93l1.41 1.41m0 11.32-1.41 1.41M19.07 4.93l-1.41 1.41M12 8a4 4 0 100 8 4 4 0 000-8z"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+      </button>
+    </div>
+    <div class="header-accent" aria-hidden="true"></div>
+  </header>
+
+  <main id="contenido" class="wrap">
+    <section class="intro">
+      <h1 class="intro-title" data-site-subtitle>Catálogo de herramientas IT</h1>
+      <p class="intro-meta">
+        <span class="pill-count"><strong data-total-count>—</strong> herramientas</span>
+        <span class="dot" aria-hidden="true">·</span>
+        <span>Actualizado <span data-site-updated>—</span></span>
+      </p>
+    </section>
+
+    <section class="toolbar" aria-label="Búsqueda y filtros">
+      <div class="search">
+        <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"/></svg>
+        <input id="search" type="search" placeholder="Buscar por nombre o descripción…" autocomplete="off" aria-label="Buscar herramientas" />
+      </div>
+      <div id="filters" class="filters" role="group" aria-label="Filtrar por categoría"></div>
+    </section>
+
+    <p id="results-info" class="results-info" role="status" aria-live="polite"></p>
+
+    <section id="grid" class="grid" aria-label="Herramientas"></section>
+
+    <div id="empty" class="empty" hidden>
+      <p class="empty-title">Sin resultados</p>
+      <p class="empty-text">Ninguna herramienta coincide con la búsqueda o el filtro. Probá con otro término o quitá el filtro de categoría.</p>
+    </div>
+
+    <div id="load-error" class="empty" hidden>
+      <p class="empty-title">No se pudo cargar el catálogo</p>
+      <p class="empty-text">
+        Verificá que <code>manifest.json</code> exista y sea válido. Si estás abriendo el archivo directamente
+        (<code>file://</code>), el navegador bloquea la carga: subilo a GitHub Pages o serví la carpeta con
+        <code>python -m http.server</code>.
+      </p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <img class="footer-logo" src="assets/logo.png" alt="" width="22" height="22" />
+      <span>Petromark · Herramienta interna de soporte IT</span>
+    </div>
+  </footer>
+
+  <!-- Modal de detalle -->
+  <div id="modal" class="modal" hidden>
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <button class="modal-close" type="button" data-close aria-label="Cerrar">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+      <div id="modal-body" class="modal-body"></div>
+    </div>
+  </div>
+
+  <script src="assets/js/app.js" defer></script>
+</body>
+</html>

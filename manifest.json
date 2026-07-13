@@ -1,0 +1,60 @@
+{
+  "site": {
+    "name": "Petromark",
+    "subtitle": "Catálogo de herramientas de soporte IT",
+    "updated": "2026-07-13"
+  },
+  "tools": [
+    {
+      "id": "limpiador-temp",
+      "name": "Limpiador de temporales",
+      "shortDescription": "Vacía carpetas temporales y libera espacio en equipos Windows.",
+      "longDescription": "Script batch que limpia %TEMP%, la carpeta Temp de Windows y la caché de prefetch. Pensado para ejecutar en estaciones de trabajo cuando se quedan sin espacio. No borra archivos de usuario ni documentos: solo temporales del sistema.",
+      "category": "Windows",
+      "version": "1.2.0",
+      "updated": "2026-07-10",
+      "icon": "🧹",
+      "changelog": [
+        { "version": "1.2.0", "date": "2026-07-10", "notes": "Se agregó limpieza de prefetch y mensajes de progreso." },
+        { "version": "1.1.0", "date": "2026-05-02", "notes": "Confirmación antes de borrar y log de resultados." },
+        { "version": "1.0.0", "date": "2026-03-15", "notes": "Versión inicial." }
+      ],
+      "files": [
+        { "name": "limpiar-temp.bat", "path": "files/limpiador-temp/limpiar-temp.bat", "size": "1 KB" }
+      ]
+    },
+    {
+      "id": "reporte-sistema",
+      "name": "Reporte de sistema",
+      "shortDescription": "Genera un informe con datos de hardware, red y equipo.",
+      "longDescription": "Script de PowerShell que recopila información del equipo (modelo, CPU, RAM, discos, adaptadores de red y sistema operativo) y la exporta a un archivo de texto en el escritorio. Útil para relevar equipos antes de un mantenimiento o para adjuntar a un ticket de soporte.",
+      "category": "Diagnóstico",
+      "version": "2.0.1",
+      "updated": "2026-06-28",
+      "icon": "📋",
+      "changelog": [
+        { "version": "2.0.1", "date": "2026-06-28", "notes": "Corrige lectura de discos en equipos con varios volúmenes." },
+        { "version": "2.0.0", "date": "2026-06-01", "notes": "Reescrito en PowerShell; salida en TXT con formato ordenado." }
+      ],
+      "files": [
+        { "name": "reporte-sistema.ps1", "path": "files/reporte-sistema/reporte-sistema.ps1", "size": "2 KB" }
+      ]
+    },
+    {
+      "id": "kit-red",
+      "name": "Kit de diagnóstico de red",
+      "shortDescription": "Conjunto de scripts para revisar conectividad y DNS.",
+      "longDescription": "Paquete con varios utilitarios de red: prueba de conectividad, renovación de IP, flush de DNS y test de latencia contra los servidores internos. Descomprimir y ejecutar el script que corresponda según el problema. Incluye un README con la guía de uso de cada uno.",
+      "category": "Redes",
+      "version": "1.0.0",
+      "updated": "2026-05-20",
+      "icon": "🌐",
+      "changelog": [
+        { "version": "1.0.0", "date": "2026-05-20", "notes": "Primera versión del kit." }
+      ],
+      "files": [
+        { "name": "kit-red.zip", "path": "files/kit-red/kit-red.zip", "size": "3 KB" }
+      ]
+    }
+  ]
+}
