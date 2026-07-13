@@ -300,7 +300,7 @@
   });
 
   el.modal.addEventListener("click", e => {
-    if (e.target.hasAttribute("data-close")) closeModal();
+    if (e.target.closest("[data-close]")) closeModal();
   });
   document.addEventListener("keydown", e => {
     if (e.key === "Escape" && !el.modal.hidden) closeModal();
