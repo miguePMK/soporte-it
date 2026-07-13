@@ -56,20 +56,20 @@
         { "name": "kit-red.zip", "path": "files/kit-red/kit-red.zip", "size": "3 KB" }
       ]
     },
-	{
-      "id": "archivadorOutlook",
-      "name": "Archivador de Outlook Classic",
-      "shortDescription": "Archivador de Correo Electrónico",
-      "longDescription": "Descomprimir y ejecutar el .bat",
-      "category": "Windows",
+    {
+      "id": "conversor-almacenamiento",
+      "name": "Conversor de almacenamiento",
+      "shortDescription": "Herramienta web para convertir entre bytes, KB, MB, GB y TB.",
+      "longDescription": "Página que corre en el navegador (no requiere instalar nada). Ingresás un valor y su unidad y muestra las equivalencias en todas las demás, en base 1024. Se abre directo desde el catálogo.",
+      "category": "Utilidades",
       "version": "1.0.0",
-      "updated": "2026-05-20",
-      "icon": "📩",
+      "updated": "2026-07-13",
+      "icon": "🔁",
       "changelog": [
-        { "version": "1.0.0", "date": "2026-05-20", "notes": "Primera Versión." }
+        { "version": "1.0.0", "date": "2026-07-13", "notes": "Primera versión." }
       ],
-      "files": [
-        { "name": "Archivador-OutlookClassic.zip", "path": "files/archivadorOutlook/Archivador-OutlookClassic.zip", "size": "8 KB" }
+      "links": [
+        { "label": "Abrir conversor", "url": "tools/conversor-almacenamiento/index.html" }
       ]
     }
   ]

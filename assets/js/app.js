@@ -119,7 +119,7 @@
       const id = card.getAttribute("data-id");
       const open = () => openModal(id);
       card.addEventListener("click", ev => {
-        if (ev.target.closest("[data-download]")) return; // no abrir modal al descargar
+        if (ev.target.closest("a")) return; // enlaces directos (descargar/abrir) no abren el modal
         open();
       });
       card.addEventListener("keydown", ev => {
@@ -130,10 +130,15 @@
 
   function cardMarkup(t) {
     const files = Array.isArray(t.files) ? t.files : [];
+    const links = Array.isArray(t.links) ? t.links : [];
     const single = files.length === 1;
     let action;
-    if (single) {
-      action = '<a class="btn btn-primary" data-download href="' + esc(files[0].path) + '" download>' +
+    if (links.length) {
+      const l = links[0];
+      action = '<a class="btn btn-primary" href="' + esc(l.url) + '" target="_blank" rel="noopener">' +
+        openIcon() + "Abrir</a>";
+    } else if (single) {
+      action = '<a class="btn btn-primary" href="' + esc(files[0].path) + '" download>' +
         downloadIcon() + "Descargar</a>";
     } else if (files.length > 1) {
       action = '<button class="btn btn-primary" type="button">' + filesIcon() +
@@ -181,7 +186,24 @@
 
   function modalMarkup(t) {
     const files = Array.isArray(t.files) ? t.files : [];
+    const links = Array.isArray(t.links) ? t.links : [];
     const changelog = Array.isArray(t.changelog) ? t.changelog : [];
+
+    const linksHtml = links.length
+      ? '<div class="m-section"><h3>Acceso</h3><div class="files">' +
+          links.map(l => {
+            const ext = /^https?:\/\//i.test(l.url);
+            return '<div class="file-row">' +
+                '<div class="file-info">' +
+                  '<div class="file-name">' + esc(l.label || "Abrir herramienta") + "</div>" +
+                  (ext ? '<div class="file-size">Enlace externo</div>' : "") +
+                "</div>" +
+                '<a class="btn btn-primary" href="' + esc(l.url) + '" target="_blank" rel="noopener">' +
+                  openIcon() + "Abrir</a>" +
+              "</div>";
+          }).join("") +
+        "</div></div>"
+      : "";
 
     const filesHtml = files.length
       ? files.map(f =>
@@ -222,7 +244,10 @@
       '<div class="m-section"><h3>Descripción</h3>' +
         '<p class="m-desc">' + esc(t.longDescription || t.shortDescription) + "</p></div>" +
       changelogHtml +
-      '<div class="m-section"><h3>Archivos</h3><div class="files">' + filesHtml + "</div></div>";
+      linksHtml +
+      (files.length
+        ? '<div class="m-section"><h3>Archivos</h3><div class="files">' + filesHtml + "</div></div>"
+        : "");
   }
 
   /* ---------- Iconos inline ---------- */
@@ -231,6 +256,9 @@
   }
   function filesIcon() {
     return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h7l2 3h7v11H4z"/></svg>';
+  }
+  function openIcon() {
+    return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7m0-7L10 14M19 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5"/></svg>';
   }
 
   /* ---------- Carga del manifest ---------- */

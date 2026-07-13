@@ -18,6 +18,10 @@ herramientas internas de soporte. Todo el contenido se maneja desde
     └── <id>/...
 ```
 
+> Si además tenés herramientas que son **páginas web** (se abren en vez de
+> descargarse), agregá una carpeta `tools/<id>/` con la página y enlazala
+> desde el manifest con `links` (ver más abajo).
+
 ## Cómo agregar una herramienta nueva
 
 1. **Subí el archivo** descargable a `files/<id>/` (creá la carpeta con el
@@ -62,6 +66,34 @@ herramientas internas de soporte. Todo el contenido se maneja desde
 
 - Podés cargar **varios archivos** en `files`: cada uno tiene su botón de descarga.
 - Una **categoría nueva** aparece sola como chip de filtro. No hay lista fija.
+
+### Herramientas que son páginas web (no descargables)
+
+Si la herramienta es una página que se abre y se usa (no un archivo para bajar),
+usá `links` en lugar de (o además de) `files`:
+
+```json
+{
+  "id": "mi-app",
+  "name": "Mi herramienta web",
+  "shortDescription": "Se abre en el navegador.",
+  "category": "Utilidades",
+  "version": "1.0.0",
+  "updated": "2026-07-13",
+  "icon": "🔁",
+  "links": [
+    { "label": "Abrir herramienta", "url": "tools/mi-app/index.html" }
+  ]
+}
+```
+
+- **Página en el mismo repo:** poné los archivos en `tools/<id>/` y usá una ruta
+  relativa como `tools/mi-app/index.html`. Se publica junto al catálogo.
+- **Página externa (otra URL):** usá la URL completa `https://...`. El sitio la
+  detecta como externa y la abre en una pestaña nueva.
+- Una entrada puede tener `files` **y** `links` a la vez (por ejemplo, abrir la
+  app y además descargar un manual). El botón de la tarjeta prioriza **Abrir**;
+  en el detalle aparecen ambas secciones.
 
 ## Publicar en GitHub Pages
 
