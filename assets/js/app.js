@@ -1,5 +1,5 @@
 /* =========================================================================
-   Petromark · Catálogo de herramientas IT
+   Petromark SRL · Catálogo de herramientas IT
    Todo el contenido viene de manifest.json. Este archivo no se edita
    para agregar herramientas.
    ========================================================================= */

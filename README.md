@@ -1,4 +1,4 @@
-# Petromark · Catálogo de herramientas IT
+# Petromark SRL · Catálogo de herramientas IT
 
 Sitio estático (HTML + CSS + JS, sin backend) para publicar y descargar
 herramientas internas de soporte. Todo el contenido se maneja desde
