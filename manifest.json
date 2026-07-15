@@ -29,7 +29,7 @@
       ]
     },
     {
-      "id": "archivador-de-correos",
+      "id": "archivador-correos",
       "name": "Archivador de Correos",
       "shortDescription": "Archivador de Correos electrónicos de Outlook Classic",
       "longDescription": "Mueve correos de Outlook (clasico) a archivos PST locales, separados por anio, y con eso libera espacio en el buzon del servidor (O365). El PST es el formato nativo de Outlook: es portable, lo copias a otra. PC y lo abris con Archivo > Abrir y exportar > Abrir archivo de datos.",
@@ -46,8 +46,8 @@
       ],
       "files": [
         {
-          "name": "Archivador Correos.zip",
-          "path": "files/archivador-de-correos/Archivador Correos.zip",
+          "name": "archivador-correos.zip",
+          "path": "files/archivador-correos/archivador-correos.zip",
           "size": "51 KB"
         }
       ]
