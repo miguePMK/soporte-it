@@ -87,11 +87,17 @@
     const unit = document.getElementById("unit");
     const grid = document.getElementById("grid");
 
-    function fmt(n){
-      if(!isFinite(n)) return "—";
-      if(n !== 0 && (Math.abs(n) < 0.001 || Math.abs(n) >= 1e9)) return n.toExponential(3);
-      return n.toLocaleString("es-AR",{maximumFractionDigits:4});
-    }
+	function fmt(n){
+	  if(!isFinite(n)) return "—";
+
+	  if (Number.isInteger(n)) {
+		return n.toLocaleString("es-AR");
+	  }
+
+	  return n.toLocaleString("es-AR", {
+		maximumFractionDigits: 12
+	  }).replace(/,?0+$/, "");
+	}
     function render(){
       const v = parseFloat(val.value);
       const base = isNaN(v) ? 0 : v * Math.pow(1024, parseInt(unit.value,10));
