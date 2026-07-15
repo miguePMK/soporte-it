@@ -147,6 +147,29 @@
           "size": "12 KB"
         }
       ]
+    },
+    {
+      "id": "pdf-merge",
+      "name": "PDF Merge",
+      "shortDescription": "Unir PDF por carpetas y patrón.",
+      "longDescription": "Con el acceso al NAS, se puede realizar la unión de varios PDF (de uno y/o distintas carpetas) y unirlos siguiendo algún patrón.",
+      "category": "PDF",
+      "version": "1.0.0",
+      "updated": "2026-07-15",
+      "icon": "📰",
+      "changelog": [
+        {
+          "version": "1.0.0",
+          "date": "2026-07-15",
+          "notes": "Versión Inicial"
+        }
+      ],
+      "links": [
+        {
+          "label": "Ir a",
+          "url": "http://192.168.0.111:8080/"
+        }
+      ]
     }
   ]
 }
