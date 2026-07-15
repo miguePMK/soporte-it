@@ -22,7 +22,32 @@ herramientas internas de soporte. Todo el contenido se maneja desde
 > descargarse), agregá una carpeta `tools/<id>/` con la página y enlazala
 > desde el manifest con `links` (ver más abajo).
 
-## Cómo agregar una herramienta nueva
+## Cargar herramientas con el editor visual (recomendado)
+
+En lugar de editar `manifest.json` a mano, abrí **`admin.html`** (por ejemplo
+`https://<usuario>.github.io/<repo>/admin.html`). Es una página con formularios
+que arma el manifest por vos:
+
+1. Abrí `admin.html`. Carga solo las herramientas que ya están publicadas.
+2. Tocá **Nueva herramienta**, completá los campos (el ID se autogenera del
+   nombre; la ruta de cada archivo se arma sola como `files/<id>/<archivo>`).
+3. **Guardar herramienta.** Se suma al borrador (queda guardado en tu navegador
+   por si cerrás la pestaña).
+4. Cuando terminaste, **Descargar manifest.json** y reemplazá el que está en la
+   raíz del repo.
+5. Subí los archivos de los programas a `files/<id>/` (y, si es una página web,
+   a `tools/<id>/`) y hacé commit.
+
+El editor no toca el repo directamente (es un sitio estático, no tiene permisos
+para eso): genera el archivo y vos lo subís. Por eso solo los **programas** se
+suben a mano; la **info** ya no se escribe en JSON.
+
+> El botón **Recargar desde el publicado** descarta el borrador local y vuelve a
+> leer el `manifest.json` que está online. Útil si editás desde otra máquina.
+
+## Cargar herramientas a mano (alternativa)
+
+Si preferís editar el `manifest.json` directamente:
 
 1. **Subí el archivo** descargable a `files/<id>/` (creá la carpeta con el
    mismo `id` que vas a usar en el manifest). Ej.: `files/mi-tool/mi-tool.ps1`.

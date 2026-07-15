@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Editor del catálogo · Petromark SRL</title>
+  <link rel="icon" type="image/png" href="assets/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root{
+      --brand:#2C7EA0; --brand-hover:#216580; --brand-bright:#4DA9CE; --accent-soft:rgba(77,169,206,.12);
+      --bg:#F3F5F7; --surface:#FFFFFF; --surface-2:#F8FAFB; --border:#E4E8EC; --border-strong:#D2D9DF;
+      --ink:#16222C; --text:#33424E; --muted:#6B7A85; --danger:#B4453B; --danger-soft:rgba(180,69,59,.1);
+      --ok:#2E7D5B;
+      --sans:"Inter",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
+      --radius:12px; --radius-sm:8px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.5}
+    .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+    a{color:var(--brand)}
+    code{font-family:var(--mono);font-size:.86em;background:var(--accent-soft);padding:1px 5px;border-radius:4px}
+
+    header.top{background:var(--surface);border-bottom:1px solid var(--border)}
+    .top .in{display:flex;align-items:center;gap:12px;min-height:64px}
+    .top img{width:34px;height:34px;border-radius:6px}
+    .top .bt{display:flex;flex-direction:column;line-height:1.1}
+    .top .nm{font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);font-size:1rem}
+    .top .sb{font-size:.74rem;color:var(--muted)}
+    .top .back{margin-left:auto;font:500 .84rem var(--sans);color:var(--brand);text-decoration:none}
+    .top .back:hover{text-decoration:underline}
+    .accent{height:3px;background:var(--brand-bright)}
+
+    main{padding:28px 0 120px}
+    h1{color:var(--ink);font-size:1.4rem;margin:0 0 4px}
+    .lead{color:var(--muted);margin:0 0 22px;font-size:.94rem;max-width:70ch}
+
+    .notice{display:none;align-items:center;gap:10px;background:var(--accent-soft);border:1px solid var(--brand-bright);
+      border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:20px;font-size:.86rem;color:var(--ink)}
+    .notice button{margin-left:auto}
+
+    .panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin-bottom:22px}
+    .panel > h2{margin:0 0 16px;font-size:.8rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+
+    .cols{display:grid;grid-template-columns:1fr 1.4fr;gap:22px;align-items:start}
+    @media(max-width:820px){.cols{grid-template-columns:1fr}}
+
+    /* Lista de herramientas */
+    .list{display:flex;flex-direction:column;gap:10px}
+    .item{display:flex;align-items:center;gap:12px;border:1px solid var(--border);border-radius:var(--radius-sm);
+      padding:12px 14px;background:var(--surface-2)}
+    .item.active{border-color:var(--brand-bright);box-shadow:0 0 0 3px var(--accent-soft)}
+    .item .ic{width:34px;height:34px;flex:none;border-radius:8px;display:grid;place-items:center;font-size:1.2rem;background:var(--accent-soft);overflow:hidden}
+    .item .ic img{width:100%;height:100%;object-fit:cover}
+    .item .meta{min-width:0;flex:1}
+    .item .nm{font-weight:600;color:var(--ink);font-size:.92rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .item .sub{font-size:.74rem;color:var(--muted);font-family:var(--mono)}
+    .item .acts{display:flex;gap:6px}
+    .empty-list{color:var(--muted);font-size:.9rem;padding:8px 2px}
+
+    /* Form */
+    .field{margin-bottom:15px}
+    .field.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    label{display:block;font-size:.76rem;font-weight:600;color:var(--ink);margin-bottom:6px}
+    label .opt{color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0}
+    input,textarea,select{width:100%;border:1px solid var(--border-strong);border-radius:var(--radius-sm);
+      background:var(--surface);color:var(--text);font:400 .92rem var(--sans);padding:9px 12px}
+    input.mono{font-family:var(--mono)}
+    textarea{resize:vertical;min-height:64px}
+    input:focus,textarea:focus,select:focus{outline:none;border-color:var(--brand-bright);box-shadow:0 0 0 3px var(--accent-soft)}
+    .hint{font-size:.74rem;color:var(--muted);margin-top:5px}
+    .path-preview{font-family:var(--mono);font-size:.76rem;color:var(--muted);margin-top:5px;word-break:break-all}
+    .err{color:var(--danger);font-size:.78rem;margin-top:5px;display:none}
+    .field.invalid input,.field.invalid textarea{border-color:var(--danger)}
+    .field.invalid .err{display:block}
+
+    fieldset{border:1px dashed var(--border-strong);border-radius:var(--radius-sm);padding:14px;margin:0 0 15px}
+    legend{font-size:.76rem;font-weight:600;color:var(--ink);padding:0 6px}
+    .sub-row{display:grid;gap:8px;align-items:start;border-bottom:1px dashed var(--border);padding:10px 0}
+    .sub-row:last-of-type{border-bottom:none}
+    .cl-row{grid-template-columns:90px 130px 1fr auto}
+    .file-row{grid-template-columns:1fr 90px auto}
+    .link-row{grid-template-columns:1fr 1.4fr auto}
+    @media(max-width:560px){.cl-row,.file-row,.link-row{grid-template-columns:1fr}.field.row2{grid-template-columns:1fr}}
+
+    .btn{display:inline-flex;align-items:center;gap:7px;font:600 .84rem var(--sans);border-radius:var(--radius-sm);
+      padding:9px 15px;border:1px solid transparent;cursor:pointer;text-decoration:none;transition:background .15s,border-color .15s,color .15s}
+    .btn svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .btn-primary{background:var(--brand);color:#fff}.btn-primary:hover{background:var(--brand-hover)}
+    .btn-ghost{background:transparent;border-color:var(--border-strong);color:var(--text)}.btn-ghost:hover{border-color:var(--brand-bright);color:var(--brand)}
+    .btn-sm{padding:6px 10px;font-size:.78rem}
+    .btn-danger{background:transparent;border-color:var(--border-strong);color:var(--danger)}.btn-danger:hover{background:var(--danger-soft);border-color:var(--danger)}
+    .btn-add{background:transparent;border:1px dashed var(--border-strong);color:var(--brand);width:100%;justify-content:center}
+    .btn-add:hover{border-color:var(--brand-bright)}
+    .form-actions{display:flex;gap:10px;margin-top:8px}
+
+    /* Export bar */
+    .exportbar{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--border);
+      box-shadow:0 -6px 22px rgba(16,34,44,.08);z-index:20}
+    .exportbar .in{display:flex;align-items:center;gap:12px;padding:14px 0}
+    .exportbar .count{font-size:.86rem;color:var(--muted)}
+    .exportbar .count strong{color:var(--ink)}
+    .exportbar .sp{margin-left:auto}
+    .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;
+      padding:10px 18px;border-radius:999px;font-size:.85rem;opacity:0;pointer-events:none;transition:opacity .2s;z-index:30}
+    .toast.show{opacity:1}
+
+    dialog.json-view{border:1px solid var(--border);border-radius:var(--radius);padding:0;max-width:720px;width:92%;background:var(--surface);color:var(--text)}
+    dialog.json-view::backdrop{background:rgba(9,16,21,.5)}
+    .jv-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border)}
+    .jv-head h3{margin:0;font-size:.95rem;color:var(--ink)}
+    dialog.json-view pre{margin:0;padding:20px;max-height:60vh;overflow:auto;font-family:var(--mono);font-size:.8rem;color:var(--text);white-space:pre-wrap;word-break:break-word}
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="wrap in">
+      <img src="assets/logo.png" alt="" />
+      <span class="bt"><span class="nm">Petromark SRL</span><span class="sb">Editor del catálogo</span></span>
+      <a class="back" href="index.html">← Ver catálogo</a>
+    </div>
+  </header>
+  <div class="accent"></div>
+
+  <main class="wrap">
+    <h1>Editor del catálogo</h1>
+    <p class="lead">Cargá y editá las herramientas con formularios. Al terminar, descargá el
+      <code>manifest.json</code> generado y reemplazalo en el repo. Los archivos de los programas
+      se suben aparte a <code>files/&lt;id&gt;/</code>.</p>
+
+    <div id="notice" class="notice">
+      <span id="notice-text"></span>
+      <button class="btn btn-ghost btn-sm" id="reload-published" type="button">Recargar desde el publicado</button>
+    </div>
+
+    <div class="panel">
+      <h2>Datos del sitio</h2>
+      <div class="field row2">
+        <div>
+          <label for="site-name">Nombre</label>
+          <input id="site-name" type="text" />
+        </div>
+        <div>
+          <label for="site-subtitle">Subtítulo</label>
+          <input id="site-subtitle" type="text" />
+        </div>
+      </div>
+    </div>
+
+    <div class="cols">
+      <div class="panel">
+        <h2>Herramientas (<span id="tool-count">0</span>)</h2>
+        <div id="list" class="list"></div>
+        <div style="margin-top:12px">
+          <button class="btn btn-add" id="new-tool" type="button">＋ Nueva herramienta</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2 id="form-title">Nueva herramienta</h2>
+        <form id="tool-form" autocomplete="off">
+          <div class="field row2">
+            <div>
+              <label for="f-name">Nombre</label>
+              <input id="f-name" type="text" required />
+              <div class="err">Requerido.</div>
+            </div>
+            <div>
+              <label for="f-id">ID <span class="opt">(se genera solo, editable)</span></label>
+              <input id="f-id" type="text" class="mono" required />
+              <div class="err">Requerido y único, sin espacios.</div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="f-short">Descripción corta</label>
+            <input id="f-short" type="text" required />
+            <div class="err">Requerido.</div>
+          </div>
+
+          <div class="field">
+            <label for="f-long">Descripción larga <span class="opt">(opcional)</span></label>
+            <textarea id="f-long"></textarea>
+          </div>
+
+          <div class="field row2">
+            <div>
+              <label for="f-category">Categoría</label>
+              <input id="f-category" type="text" list="cat-list" required />
+              <datalist id="cat-list"></datalist>
+              <div class="err">Requerido.</div>
+            </div>
+            <div>
+              <label for="f-icon">Ícono <span class="opt">(emoji o ruta a imagen)</span></label>
+              <input id="f-icon" type="text" placeholder="🛠️" />
+            </div>
+          </div>
+
+          <div class="field row2">
+            <div>
+              <label for="f-version">Versión</label>
+              <input id="f-version" type="text" class="mono" placeholder="1.0.0" required />
+              <div class="err">Requerido.</div>
+            </div>
+            <div>
+              <label for="f-updated">Fecha de actualización</label>
+              <input id="f-updated" type="date" required />
+              <div class="err">Requerido.</div>
+            </div>
+          </div>
+
+          <fieldset>
+            <legend>Novedades / changelog <span class="opt">(opcional)</span></legend>
+            <div id="cl-rows"></div>
+            <button class="btn btn-ghost btn-sm" id="add-cl" type="button">＋ Agregar entrada</button>
+          </fieldset>
+
+          <fieldset>
+            <legend>Archivos para descargar <span class="opt">(opcional)</span></legend>
+            <div id="file-rows"></div>
+            <button class="btn btn-ghost btn-sm" id="add-file" type="button">＋ Agregar archivo</button>
+            <div class="hint">La ruta se arma sola como <code>files/&lt;id&gt;/&lt;archivo&gt;</code>. Subí el archivo a esa carpeta en el repo.</div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Enlaces / herramientas web <span class="opt">(opcional)</span></legend>
+            <div id="link-rows"></div>
+            <button class="btn btn-ghost btn-sm" id="add-link" type="button">＋ Agregar enlace</button>
+            <div class="hint">Para una página en el mismo repo usá <code>tools/&lt;id&gt;/index.html</code>; para una externa, la URL completa.</div>
+          </fieldset>
+
+          <div class="form-actions">
+            <button class="btn btn-primary" type="submit" id="save-tool">Guardar herramienta</button>
+            <button class="btn btn-ghost" type="button" id="cancel-edit">Limpiar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <div class="exportbar">
+    <div class="wrap in">
+      <span class="count"><strong id="bar-count">0</strong> herramientas en el borrador</span>
+      <span class="sp"></span>
+      <button class="btn btn-ghost" id="view-json" type="button">Ver JSON</button>
+      <button class="btn btn-ghost" id="copy-json" type="button">Copiar</button>
+      <button class="btn btn-primary" id="download-json" type="button">
+        <svg viewBox="0 0 24 24"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 21h14"/></svg>
+        Descargar manifest.json
+      </button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <dialog class="json-view" id="json-dialog">
+    <div class="jv-head">
+      <h3>manifest.json generado</h3>
+      <button class="btn btn-ghost btn-sm" id="close-json" type="button">Cerrar</button>
+    </div>
+    <pre id="json-pre"></pre>
+  </dialog>
+
+  <script>
+  (function(){
+    "use strict";
+    const DRAFT_KEY = "pm-admin-draft-v1";
+    const $ = s => document.querySelector(s);
+
+    let site = { name: "Petromark SRL", subtitle: "Catálogo de herramientas de soporte IT" };
+    let tools = [];         // array de herramientas
+    let editingIndex = -1;  // -1 = nueva
+
+    /* ---------- Utilidades ---------- */
+    function slug(str){
+      return String(str||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+        .toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"");
+    }
+    function today(){ return new Date().toISOString().slice(0,10); }
+    function isImg(icon){ return typeof icon==="string" && /(\/|\.(png|jpe?g|svg|webp|gif))$/i.test(icon); }
+    function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),1800); }
+
+    function saveDraft(){
+      try{ localStorage.setItem(DRAFT_KEY, JSON.stringify({site,tools})); }catch(e){}
+    }
+
+    /* ---------- Carga inicial ---------- */
+    async function init(){
+      let draft=null;
+      try{ const raw=localStorage.getItem(DRAFT_KEY); if(raw) draft=JSON.parse(raw); }catch(e){}
+      if(draft && Array.isArray(draft.tools)){
+        site = draft.site || site;
+        tools = draft.tools;
+        showNotice("Estás editando un borrador local guardado en este navegador.");
+      } else {
+        await loadPublished(true);
+      }
+      $("#site-name").value = site.name || "";
+      $("#site-subtitle").value = site.subtitle || "";
+      renderList(); resetForm(); refreshCategories(); updateCounts();
+    }
+
+    async function loadPublished(silent){
+      try{
+        const res = await fetch("manifest.json",{cache:"no-store"});
+        if(!res.ok) throw new Error("HTTP "+res.status);
+        const data = await res.json();
+        site = data.site || site;
+        tools = Array.isArray(data.tools)? data.tools : [];
+        if(!silent){ hideNotice(); toast("Cargado desde el manifest publicado"); }
+      }catch(e){
+        if(!silent) toast("No se pudo leer manifest.json (¿estás sirviendo el sitio?)");
+        tools = tools || [];
+      }
+    }
+
+    function showNotice(text){ $("#notice-text").textContent=text; $("#notice").style.display="flex"; }
+    function hideNotice(){ $("#notice").style.display="none"; }
+
+    /* ---------- Lista ---------- */
+    function renderList(){
+      const list=$("#list");
+      if(!tools.length){ list.innerHTML='<div class="empty-list">Todavía no hay herramientas. Creá una con “Nueva herramienta”.</div>'; return; }
+      list.innerHTML = tools.map((t,i)=>{
+        const ic = isImg(t.icon)? '<img src="'+escAttr(t.icon)+'" alt="">' : escHtml(t.icon||"🛠️");
+        return '<div class="item'+(i===editingIndex?' active':'')+'" data-i="'+i+'">'+
+          '<div class="ic">'+ic+'</div>'+
+          '<div class="meta"><div class="nm">'+escHtml(t.name||"(sin nombre)")+'</div>'+
+          '<div class="sub">'+escHtml(t.category||"—")+' · v'+escHtml(t.version||"—")+'</div></div>'+
+          '<div class="acts">'+
+          '<button class="btn btn-ghost btn-sm" data-edit="'+i+'" type="button">Editar</button>'+
+          '<button class="btn btn-danger btn-sm" data-del="'+i+'" type="button">Eliminar</button>'+
+          '</div></div>';
+      }).join("");
+      list.querySelectorAll("[data-edit]").forEach(b=>b.addEventListener("click",()=>editTool(+b.dataset.edit)));
+      list.querySelectorAll("[data-del]").forEach(b=>b.addEventListener("click",()=>delTool(+b.dataset.del)));
+    }
+
+    function updateCounts(){ $("#tool-count").textContent=tools.length; $("#bar-count").textContent=tools.length; }
+
+    function refreshCategories(){
+      const cats=[...new Set(tools.map(t=>t.category).filter(Boolean))].sort();
+      $("#cat-list").innerHTML = cats.map(c=>'<option value="'+escAttr(c)+'">').join("");
+    }
+
+    /* ---------- Sub-filas dinámicas ---------- */
+    function clRow(v){ v=v||{};
+      const el=document.createElement("div"); el.className="sub-row cl-row";
+      el.innerHTML='<input type="text" class="mono cl-ver" placeholder="1.0.0" value="'+escAttr(v.version||"")+'">'+
+        '<input type="date" class="cl-date" value="'+escAttr(v.date||"")+'">'+
+        '<input type="text" class="cl-notes" placeholder="Qué cambió" value="'+escAttr(v.notes||"")+'">'+
+        '<button class="btn btn-danger btn-sm" type="button">✕</button>';
+      el.querySelector("button").addEventListener("click",()=>el.remove());
+      return el;
+    }
+    function fileRow(v){ v=v||{};
+      const el=document.createElement("div"); el.className="sub-row file-row";
+      el.innerHTML='<div><input type="text" class="mono file-name" placeholder="mi-tool.ps1" value="'+escAttr(v.name||"")+'"><div class="path-preview"></div></div>'+
+        '<input type="text" class="file-size" placeholder="2 KB" value="'+escAttr(v.size||"")+'">'+
+        '<button class="btn btn-danger btn-sm" type="button">✕</button>';
+      const upd=()=>{ const n=el.querySelector(".file-name").value.trim();
+        el.querySelector(".path-preview").textContent = n ? "files/"+($("#f-id").value.trim()||"<id>")+"/"+n : ""; };
+      el.querySelector(".file-name").addEventListener("input",upd);
+      el.querySelector("button").addEventListener("click",()=>el.remove());
+      upd(); return el;
+    }
+    function linkRow(v){ v=v||{};
+      const el=document.createElement("div"); el.className="sub-row link-row";
+      el.innerHTML='<input type="text" class="link-label" placeholder="Abrir herramienta" value="'+escAttr(v.label||"")+'">'+
+        '<input type="text" class="mono link-url" placeholder="tools/mi-tool/index.html" value="'+escAttr(v.url||"")+'">'+
+        '<button class="btn btn-danger btn-sm" type="button">✕</button>';
+      el.querySelector("button").addEventListener("click",()=>el.remove());
+      return el;
+    }
+    function refreshFilePaths(){
+      document.querySelectorAll("#file-rows .file-row").forEach(row=>{
+        const n=row.querySelector(".file-name").value.trim();
+        row.querySelector(".path-preview").textContent = n ? "files/"+($("#f-id").value.trim()||"<id>")+"/"+n : "";
+      });
+    }
+
+    /* ---------- Form ---------- */
+    function resetForm(){
+      editingIndex=-1; $("#form-title").textContent="Nueva herramienta";
+      $("#tool-form").reset();
+      $("#f-icon").value="🛠️"; $("#f-version").value="1.0.0"; $("#f-updated").value=today();
+      $("#cl-rows").innerHTML=""; $("#file-rows").innerHTML=""; $("#link-rows").innerHTML="";
+      document.querySelectorAll(".field.invalid").forEach(f=>f.classList.remove("invalid"));
+      renderList();
+    }
+    function editTool(i){
+      const t=tools[i]; if(!t) return; editingIndex=i;
+      $("#form-title").textContent="Editando: "+(t.name||"");
+      $("#f-name").value=t.name||""; $("#f-id").value=t.id||"";
+      $("#f-short").value=t.shortDescription||""; $("#f-long").value=t.longDescription||"";
+      $("#f-category").value=t.category||""; $("#f-icon").value=t.icon||"🛠️";
+      $("#f-version").value=t.version||""; $("#f-updated").value=t.updated||today();
+      $("#cl-rows").innerHTML=""; (t.changelog||[]).forEach(c=>$("#cl-rows").appendChild(clRow(c)));
+      $("#file-rows").innerHTML=""; (t.files||[]).forEach(f=>$("#file-rows").appendChild(fileRow(f)));
+      $("#link-rows").innerHTML=""; (t.links||[]).forEach(l=>$("#link-rows").appendChild(linkRow(l)));
+      renderList();
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+    function delTool(i){
+      if(!confirm("¿Eliminar “"+(tools[i].name||"")+"” del borrador?")) return;
+      tools.splice(i,1); if(editingIndex===i) resetForm();
+      renderList(); refreshCategories(); updateCounts(); saveDraft();
+    }
+
+    function collectForm(){
+      const id=$("#f-id").value.trim();
+      const files=[...document.querySelectorAll("#file-rows .file-row")].map(r=>{
+        const name=r.querySelector(".file-name").value.trim(); if(!name) return null;
+        const size=r.querySelector(".file-size").value.trim();
+        const path = name.includes("/") ? name : "files/"+id+"/"+name;
+        const o={name:name.split("/").pop(),path}; if(size) o.size=size; return o;
+      }).filter(Boolean);
+      const links=[...document.querySelectorAll("#link-rows .link-row")].map(r=>{
+        const url=r.querySelector(".link-url").value.trim(); if(!url) return null;
+        const label=r.querySelector(".link-label").value.trim()||"Abrir herramienta";
+        return {label,url};
+      }).filter(Boolean);
+      const changelog=[...document.querySelectorAll("#cl-rows .cl-row")].map(r=>{
+        const version=r.querySelector(".cl-ver").value.trim(); if(!version) return null;
+        const date=r.querySelector(".cl-date").value.trim(); const notes=r.querySelector(".cl-notes").value.trim();
+        const o={version}; if(date)o.date=date; if(notes)o.notes=notes; return o;
+      }).filter(Boolean);
+
+      const o={ id, name:$("#f-name").value.trim(), shortDescription:$("#f-short").value.trim() };
+      const long=$("#f-long").value.trim(); if(long) o.longDescription=long;
+      o.category=$("#f-category").value.trim();
+      o.version=$("#f-version").value.trim();
+      o.updated=$("#f-updated").value.trim();
+      const icon=$("#f-icon").value.trim(); if(icon) o.icon=icon;
+      if(changelog.length) o.changelog=changelog;
+      if(files.length) o.files=files;
+      if(links.length) o.links=links;
+      return o;
+    }
+
+    function validate(){
+      let ok=true;
+      const reqs=[["f-name"],["f-id"],["f-short"],["f-category"],["f-version"],["f-updated"]];
+      reqs.forEach(([id])=>{ const inp=$("#"+id); const field=inp.closest(".field")||inp.parentElement.closest(".field");
+        const wrap=inp.closest(".field"); if(!inp.value.trim()){ if(wrap){wrap.classList.add("invalid");} ok=false; }
+        else if(wrap){ wrap.classList.remove("invalid"); } });
+      // id único
+      const id=$("#f-id").value.trim();
+      const dup = tools.some((t,i)=>t.id===id && i!==editingIndex);
+      if(dup){ $("#f-id").closest(".field").classList.add("invalid"); $("#f-id").closest(".field").querySelector(".err").textContent="Ese ID ya existe."; ok=false; }
+      if(/\s/.test(id)){ $("#f-id").closest(".field").classList.add("invalid"); ok=false; }
+      return ok;
+    }
+
+    /* ---------- Export ---------- */
+    function buildManifest(){
+      const s={ name:$("#site-name").value.trim()||"Petromark SRL",
+                subtitle:$("#site-subtitle").value.trim(), updated:today() };
+      return { site:s, tools };
+    }
+    function manifestJSON(){ return JSON.stringify(buildManifest(),null,2)+"\n"; }
+
+    /* ---------- Eventos ---------- */
+    $("#f-name").addEventListener("input",e=>{
+      // autogenerar id solo si estamos creando y el id sigue "vacío o sincronizado"
+      if(editingIndex===-1){ $("#f-id").value=slug(e.target.value); refreshFilePaths(); }
+    });
+    $("#f-id").addEventListener("input",refreshFilePaths);
+    $("#add-cl").addEventListener("click",()=>$("#cl-rows").appendChild(clRow({version:$("#f-version").value.trim(),date:today()})));
+    $("#add-file").addEventListener("click",()=>$("#file-rows").appendChild(fileRow()));
+    $("#add-link").addEventListener("click",()=>$("#link-rows").appendChild(linkRow()));
+    $("#new-tool").addEventListener("click",resetForm);
+    $("#cancel-edit").addEventListener("click",resetForm);
+    $("#reload-published").addEventListener("click",async()=>{
+      if(!confirm("Esto reemplaza el borrador actual por lo que está publicado. ¿Seguir?")) return;
+      try{ localStorage.removeItem(DRAFT_KEY); }catch(e){}
+      await loadPublished(false);
+      $("#site-name").value=site.name||""; $("#site-subtitle").value=site.subtitle||"";
+      renderList(); resetForm(); refreshCategories(); updateCounts();
+    });
+
+    $("#site-name").addEventListener("input",()=>{site.name=$("#site-name").value;saveDraft();});
+    $("#site-subtitle").addEventListener("input",()=>{site.subtitle=$("#site-subtitle").value;saveDraft();});
+
+    $("#tool-form").addEventListener("submit",e=>{
+      e.preventDefault();
+      if(!validate()){ toast("Revisá los campos marcados"); return; }
+      const t=collectForm();
+      if(editingIndex===-1) tools.push(t); else tools[editingIndex]=t;
+      refreshCategories(); updateCounts(); saveDraft();
+      toast(editingIndex===-1?"Herramienta agregada":"Cambios guardados");
+      resetForm();
+    });
+
+    $("#download-json").addEventListener("click",()=>{
+      const blob=new Blob([manifestJSON()],{type:"application/json"});
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement("a"); a.href=url; a.download="manifest.json"; a.click();
+      URL.revokeObjectURL(url); toast("manifest.json descargado");
+    });
+    $("#copy-json").addEventListener("click",async()=>{
+      try{ await navigator.clipboard.writeText(manifestJSON()); toast("Copiado al portapapeles"); }
+      catch(e){ $("#json-pre").textContent=manifestJSON(); $("#json-dialog").showModal(); }
+    });
+    $("#view-json").addEventListener("click",()=>{ $("#json-pre").textContent=manifestJSON(); $("#json-dialog").showModal(); });
+    $("#close-json").addEventListener("click",()=>$("#json-dialog").close());
+
+    init();
+  })();
+
+  function escHtml(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+  function escAttr(s){return escHtml(s).replace(/"/g,"&quot;");}
+  </script>
+</body>
+</html>
