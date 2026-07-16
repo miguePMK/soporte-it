@@ -114,6 +114,11 @@
           "version": "1.0.0",
           "date": "2026-07-15",
           "notes": "Versión Inicial"
+        },
+        {
+          "version": "1.2.0",
+          "date": "2026-07-16",
+          "notes": "Se agregó solapa para las capturas de imágenes"
         }
       ],
       "files": [
