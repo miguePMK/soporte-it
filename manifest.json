@@ -106,8 +106,8 @@
       "shortDescription": "Historial de Portapapeles",
       "longDescription": "Sistema que guarda un historial de portapapeles (100 entradas).",
       "category": "Utilidades",
-      "version": "1.0.0",
-      "updated": "2026-07-15",
+      "version": "1.2.0",
+      "updated": "2026-07-16",
       "icon": "📑",
       "changelog": [
         {
