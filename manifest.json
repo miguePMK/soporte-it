@@ -2,7 +2,7 @@
   "site": {
     "name": "Petromark SRL",
     "subtitle": "Catálogo de herramientas",
-    "updated": "2026-07-15"
+    "updated": "2026-07-16"
   },
   "tools": [
     {
@@ -168,6 +168,30 @@
         {
           "label": "Ir a",
           "url": "http://192.168.0.111:8080/"
+        }
+      ]
+    },
+    {
+      "id": "ocr-petromark",
+      "name": "OCR",
+      "shortDescription": "Convierte PDFs escaneados e imágenes en texto editable y tablas exportables, con OCR nativo de Windows (offline).",
+      "longDescription": "OCR Petromark extrae texto de imágenes y PDFs escaneados —esos donde el texto no se puede seleccionar ni copiar— y lo devuelve listo para editar, copiar o exportar. Usa el motor de OCR nativo de Windows, así que trabaja 100% offline y sin instalar nada extra: es un ejecutable de doble clic.\nCargás el contenido pegando una captura desde el portapapeles (Ctrl+V), abriendo un archivo de imagen, o abriendo un PDF escaneado multipágina (elegís una página o procesás todas). Tiene selector de idioma (español/inglés) y un preprocesado opcional que mejora los escaneos de baja calidad.\nOfrece dos modos de salida:\n\nTexto: el resultado cae en un cuadro editable para corregir a mano lo que el OCR no leyó perfecto; se copia con un clic o se exporta a .txt.\nTabla: reconstruye filas y columnas a partir de la posición de las palabras y las muestra en una grilla, con exportación a CSV y Excel (una hoja por página).",
+      "category": "Utilidades",
+      "version": "1.0.0",
+      "updated": "2026-07-16",
+      "icon": "📝",
+      "changelog": [
+        {
+          "version": "1.0.0",
+          "date": "2026-07-16",
+          "notes": "Versión Inicial"
+        }
+      ],
+      "files": [
+        {
+          "name": "ocr-petromark.zip",
+          "path": "files/ocr-petromark/ocr-petromark.zip",
+          "size": "48 KB"
         }
       ]
     }
