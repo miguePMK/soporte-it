@@ -2,7 +2,7 @@
   "site": {
     "name": "Petromark SRL",
     "subtitle": "Catálogo de herramientas",
-    "updated": "2026-07-16"
+    "updated": "2026-07-17"
   },
   "tools": [
     {
@@ -82,14 +82,19 @@
       "shortDescription": "Comandos de Github",
       "longDescription": "Sistema para clonar repositorios de Github y realizar commits.",
       "category": "Desarrollo",
-      "version": "1.0.0",
-      "updated": "2026-07-15",
+      "version": "2.0.0",
+      "updated": "2026-07-17",
       "icon": "💻",
       "changelog": [
         {
           "version": "1.0.0",
           "date": "2026-07-15",
           "notes": "Versión Inicial"
+        },
+        {
+          "version": "2.0.0",
+          "date": "2026-07-17",
+          "notes": "Barra de estado fija (carpeta, rama actual, usuario activo, cambios pendientes) Tres pestañas: Día a día, Ramas, Config/Usuario — más una cuarta de Ayuda Día a día: clone, push, pull, fetch (con indicador adelante/atrás), status, stash, historial, revert y descartar cambios locales Ramas: desplegable con la actual marcada, cambiar, crear, borrar (con confirmación) Config/Usuario: ver y cambiar usuario (global/local), ver remoto Tooltips en cada botón mostrando qué hace y el comando real Confirmaciones solo en lo destructivo"
         }
       ],
       "files": [
