@@ -204,6 +204,30 @@
           "size": "48 KB"
         }
       ]
+    },
+    {
+      "id": "translateshot",
+      "name": "Traductor Capturador",
+      "shortDescription": "Capturador y traductor",
+      "longDescription": "Similar al capturador de imágenes \"Lightshot\", únicamente que traduce el texto Ingles a Español.",
+      "category": "Utilidades",
+      "version": "1.0.0",
+      "updated": "2026-07-17",
+      "icon": "💬",
+      "changelog": [
+        {
+          "version": "1.0.0",
+          "date": "2026-07-17",
+          "notes": "Versión Inicial"
+        }
+      ],
+      "files": [
+        {
+          "name": "translateshot.zip",
+          "path": "files/translateshot/translateshot.zip",
+          "size": "32 KB"
+        }
+      ]
     }
   ]
 }
