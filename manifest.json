@@ -2,7 +2,7 @@
   "site": {
     "name": "Petromark SRL",
     "subtitle": "Catálogo de herramientas",
-    "updated": "2026-07-17"
+    "updated": "2026-07-20"
   },
   "tools": [
     {
@@ -226,6 +226,54 @@
           "name": "translateshot.zip",
           "path": "files/translateshot/translateshot.zip",
           "size": "32 KB"
+        }
+      ]
+    },
+    {
+      "id": "extractor-datos-pdf",
+      "name": "Extractor de Datos PDF",
+      "shortDescription": "Sistema para extraer datos de un PDF",
+      "longDescription": "Selecciona varios PDF o una carpeta de PDF's, organiza los datos a extraer y expórtalos a .xlsx",
+      "category": "PDF",
+      "version": "1.0.0",
+      "updated": "2026-07-20",
+      "icon": "📊",
+      "changelog": [
+        {
+          "version": "1.0.0",
+          "date": "2026-07-20",
+          "notes": "Versión Inicial"
+        }
+      ],
+      "files": [
+        {
+          "name": "extractor-datos-pdf.zip",
+          "path": "files/extractor-datos-pdf/extractor-datos-pdf.zip",
+          "size": "48 KB"
+        }
+      ]
+    },
+    {
+      "id": "gestor-archivos-petromark",
+      "name": "Gestor de Archivos",
+      "shortDescription": "Renombra archivos y reorganiza en carpetas",
+      "longDescription": "Renombra varios archivos según un patrón y reorganiza en carpetas específicas.",
+      "category": "Utilidades",
+      "version": "1.0.0",
+      "updated": "2026-07-20",
+      "icon": "🗂",
+      "changelog": [
+        {
+          "version": "1.0.0",
+          "date": "2026-07-20",
+          "notes": "Versión Inicial"
+        }
+      ],
+      "files": [
+        {
+          "name": "gestor-archivos-petromark.zip",
+          "path": "files/gestor-archivos-petromark/gestor-archivos-petromark.zip",
+          "size": "12 KB"
         }
       ]
     }
