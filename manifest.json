@@ -256,12 +256,12 @@
     {
       "id": "gestor-archivos-petromark",
       "name": "Gestor de Archivos",
-      "shortDescription": "Renombra archivos y reorganiza en carpetas",
+      "shortDescription": "Renombrador de archivos y reorganizador de carpetas",
       "longDescription": "Renombra varios archivos según un patrón y reorganiza en carpetas específicas.",
       "category": "Utilidades",
       "version": "1.0.0",
       "updated": "2026-07-20",
-      "icon": "🗂",
+      "icon": "📁",
       "changelog": [
         {
           "version": "1.0.0",
