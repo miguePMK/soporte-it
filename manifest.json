@@ -288,8 +288,8 @@
       ]
     },
     {
-      "id": "herraminetas-windows",
-      "name": "Herraminetas de Windows",
+      "id": "herramientas-windows",
+      "name": "Herramientas de Windows",
       "shortDescription": "Ejecuta las mayoría de los comandos de Windows desde una simple interfaz.",
       "category": "Windows",
       "version": "1.0.0",
@@ -305,7 +305,7 @@
       "files": [
         {
           "name": "herramientas-windows",
-          "path": "files/herraminetas-windows/herramientas-windows",
+          "path": "files/herramientas-windows/herramientas-windows",
           "size": "45 KB"
         }
       ]
