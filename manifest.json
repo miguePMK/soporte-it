@@ -2,7 +2,7 @@
   "site": {
     "name": "Petromark SRL",
     "subtitle": "Catálogo de herramientas",
-    "updated": "2026-07-22"
+    "updated": "2026-07-27"
   },
   "tools": [
     {
@@ -284,6 +284,29 @@
           "name": "gestor-archivos-petromark.zip",
           "path": "files/gestor-archivos-petromark/gestor-archivos-petromark.zip",
           "size": "12 KB"
+        }
+      ]
+    },
+    {
+      "id": "herraminetas-windows",
+      "name": "Herraminetas de Windows",
+      "shortDescription": "Ejecuta las mayoría de los comandos de Windows desde una simple interfaz.",
+      "category": "Windows",
+      "version": "1.0.0",
+      "updated": "2026-07-27",
+      "icon": "🖥",
+      "changelog": [
+        {
+          "version": "1.0.0",
+          "date": "2026-07-27",
+          "notes": "Versión Inicial"
+        }
+      ],
+      "files": [
+        {
+          "name": "herramientas-windows",
+          "path": "files/herraminetas-windows/herramientas-windows",
+          "size": "45 KB"
         }
       ]
     }
