@@ -2,7 +2,7 @@
   "site": {
     "name": "Petromark SRL",
     "subtitle": "Catálogo de herramientas",
-    "updated": "2026-07-27"
+    "updated": "2026-07-30"
   },
   "tools": [
     {
@@ -309,6 +309,16 @@
           "size": "45 KB"
         }
       ]
+    },
+    {
+      "id": "buscador-correos",
+      "name": "Buscador de Correos",
+      "shortDescription": "Sistemas para buscar adjuntos en Outlook",
+      "longDescription": "Elige varios filtros para buscar correos electrónicos y exportarlos a una carpeta.",
+      "category": "Windows",
+      "version": "1.0.0",
+      "updated": "2026-07-30",
+      "icon": "📎"
     }
   ]
 }
