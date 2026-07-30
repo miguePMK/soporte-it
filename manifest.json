@@ -305,7 +305,7 @@
       "files": [
         {
           "name": "herramientas-windows",
-          "path": "files/herramientas-windows/herramientas-windows.zip",
+          "path": "files/herramientas-windows/herramientas-windows",
           "size": "45 KB"
         }
       ]
@@ -318,7 +318,14 @@
       "category": "Windows",
       "version": "1.0.0",
       "updated": "2026-07-30",
-      "icon": "📎"
+      "icon": "📎",
+      "files": [
+        {
+          "name": "buscador-correos.zip",
+          "path": "files/buscador-correos/buscador-correos.zip",
+          "size": "43 KB"
+        }
+      ]
     }
   ]
 }
