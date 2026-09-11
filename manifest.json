@@ -2,7 +2,7 @@
   "site": {
     "name": "Petromark SRL",
     "subtitle": "Catálogo de herramientas",
-    "updated": "2026-07-30"
+    "updated": "2026-09-11"
   },
   "tools": [
     {
@@ -264,7 +264,7 @@
       ]
     },
     {
-      "id": "gestor-archivos-petromark",
+      "id": "gestor-archivos",
       "name": "Gestor de Archivos",
       "shortDescription": "Renombrador de archivos y reorganizador de carpetas",
       "longDescription": "Renombra varios archivos según un patrón y reorganiza en carpetas específicas.",
@@ -281,8 +281,8 @@
       ],
       "files": [
         {
-          "name": "gestor-archivos-petromark.zip",
-          "path": "files/gestor-archivos-petromark/gestor-archivos-petromark.zip",
+          "name": "gestor-archivos.zip",
+          "path": "files/gestor-archivos/gestor-archivos.zip",
           "size": "12 KB"
         }
       ]
