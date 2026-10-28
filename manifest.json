@@ -2,7 +2,7 @@
   "site": {
     "name": "Petromark SRL",
     "subtitle": "Catálogo de herramientas",
-    "updated": "2026-09-11"
+    "updated": "2026-10-28"
   },
   "tools": [
     {
@@ -324,6 +324,23 @@
           "name": "buscador-correos.zip",
           "path": "files/buscador-correos/buscador-correos.zip",
           "size": "43 KB"
+        }
+      ]
+    },
+    {
+      "id": "conciliadorIVA",
+      "name": "Conciliador",
+      "shortDescription": "Concilia línea por línea el IVA Compras de AFIP/ARCA contra SAP o TANGO y marca diferencias, faltantes y errores de carga.",
+      "longDescription": "El Conciliador IVA Compras es una aplicación de escritorio para Windows que automatiza el control mensual del IVA Compras. Compara el Excel descargado de AFIP/ARCA, que se toma como fuente de verdad, contra el exportado por el sistema contable, SAP o TANGO. Reconoce solo qué archivo es cada uno, aunque se carguen al revés, y empareja los comprobantes por CUIT, letra, punto de venta y número. También detecta errores de tipeo en el punto de venta, el número o el CUIT. En cada comprobante compara Neto Gravado, IVA, Exento y Total, convierte la moneda extranjera con el tipo de cambio informado y separa las percepciones de IVA. Las tolerancias de diferencia se configuran desde la misma app. El resultado es un reporte Excel con resumen, detalle completo y una hoja de observaciones ordenada por gravedad. Cada fila queda clasificada como OK, advertencia, error, solo en AFIP, solo en el sistema o de otro período, con la causa probable explicada en texto claro.",
+      "category": "Contabilidad",
+      "version": "1.2.0",
+      "updated": "2026-10-28",
+      "icon": "🧮",
+      "files": [
+        {
+          "name": "ConciliadorIVA.zip",
+          "path": "files/conciliadorIVA/ConciliadorIVA.zip",
+          "size": "10"
         }
       ]
     }
