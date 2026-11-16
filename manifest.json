@@ -2,7 +2,7 @@
   "site": {
     "name": "Petromark SRL",
     "subtitle": "Catálogo de herramientas",
-    "updated": "2026-11-03"
+    "updated": "2026-11-16"
   },
   "tools": [
     {
@@ -34,7 +34,7 @@
       "shortDescription": "Archivador de Correos electrónicos de Outlook Classic",
       "longDescription": "Mueve correos de Outlook (clasico) a archivos PST locales, separados por anio, y con eso libera espacio en el buzon del servidor (O365). El PST es el formato nativo de Outlook: es portable, lo copias a otra. PC y lo abris con Archivo > Abrir y exportar > Abrir archivo de datos.",
       "category": "Windows",
-      "version": "2.0.0",
+      "version": "3.0.0",
       "updated": "2026-07-21",
       "icon": "📩",
       "changelog": [
@@ -47,6 +47,11 @@
           "version": "2.0.0",
           "date": "2026-07-21",
           "notes": "Migró el sistema a Python, recibiendo una mejora en Rendimiento con un agregado visual (barra de progreso)"
+        },
+        {
+          "version": "3.0.0",
+          "date": "2026-11-16",
+          "notes": "Aspecto visual y funcionamiento"
         }
       ],
       "files": [
